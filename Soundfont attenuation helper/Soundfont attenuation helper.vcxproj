@@ -159,12 +159,16 @@
   <ItemGroup>
     <ClCompile Include="Soundfont attenuation helper.cpp" />
     <ClCompile Include="SoundfontTester.cpp" />
+    <ClCompile Include="SoundfontTesterProgram0.cpp" />
+    <ClCompile Include="SoundfontTesterReference.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SoundfontTester.h" />
+    <ClInclude Include="SoundfontTesterProgram0.h" />
+    <ClInclude Include="SoundfontTesterReference.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

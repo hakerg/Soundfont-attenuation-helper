@@ -2,7 +2,8 @@
 //
 
 #include <iostream>
-#include "SoundfontTester.h"
+#include "SoundfontTesterProgram0.h"
+#include "SoundfontTesterReference.h"
 using namespace std;
 
 SoundfontTester * tester;
@@ -29,19 +30,18 @@ int main(int argc, char** argv)
 {
 	BASS_Init(-1, 44100, NULL, NULL, NULL);
 	string reference = "C:\\Users\\grzeg\\Soundfonty\\Scc1t2.sf2";
-	string filename = "C:\\Users\\grzeg\\Soundfonty\\Papelmedia SF2 GM 2007.sf2";
+	string filename = "C:\\Users\\grzeg\\Soundfonty\\just t4.sf2";
 	if (argc > 1)
 	{
 		filename = argv[1];
 	}
-	tester = new SoundfontTester(reference, filename);
+	tester = new SoundfontTesterReference(filename, reference, 0.6F);
 	for (int b = 0; b < 128; b++)
 	{
 		for (int p = 0; p < 128; p++)
 		{
 			check(b, p, 60);
 		}
-		cout << endl;
 	}
 	cout << endl;
 	for (int p = 0; p < 128; p++)
@@ -50,10 +50,10 @@ int main(int argc, char** argv)
 		{
 			check(128, p, k);
 		}
-		cout << endl;
 	}
 	cout << endl;
 	delete tester;
+	BASS_Free();
 	system("PAUSE");
 }
 

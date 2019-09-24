@@ -2,6 +2,42 @@
 #include <cmath>
 #include <iostream>
 
+SoundfontTester::SoundfontTester(const string& testedSoundfontPath)
+{
+	LoadSoundfont(testedSoundfontPath, tested);
+}
+
+void SoundfontTester::LoadSoundfont(const string& path, HSOUNDFONT& target, float volumeMultiplier)
+{
+	target = BASS_MIDI_FontInit(path.c_str(), NULL);
+	BassAssert();
+	BASS_MIDI_FontSetVolume(target, 0.1F * volumeMultiplier);
+	BassAssert();
+}
+
+void SoundfontTester::FreeSoundfont(HSOUNDFONT soundfont)
+{
+	BASS_MIDI_FontFree(soundfont);
+	BassAssert();
+}
+
+SoundfontTester::~SoundfontTester()
+{
+	FreeSoundfont(tested);
+}
+
+void SoundfontTester::BassAssert()
+{
+	assertCount++;
+	int errorCode = BASS_ErrorGetCode();
+	if (errorCode != 0)
+	{
+		cout << "BASS error code: " << errorCode << endl;
+		cout << "Assert count: " << assertCount << endl;
+		system("PAUSE");
+	}
+}
+
 float SoundfontTester::GetVolume(HSOUNDFONT soundfont, int bank, int program, int key, int velocity)
 {
 	HSTREAM stream = BASS_MIDI_StreamCreate(16, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE, 0);
@@ -48,42 +84,4 @@ float SoundfontTester::GetVolume(HSOUNDFONT soundfont, int bank, int program, in
 	BASS_StreamFree(stream);
 	BassAssert();
 	return maxSum;
-}
-
-void SoundfontTester::BassAssert()
-{
-	assertCount++;
-	int errorCode = BASS_ErrorGetCode();
-	if (errorCode != 0)
-	{
-		cout << "BASS error code: " << errorCode << endl;
-		cout << "Assert count: " << assertCount << endl;
-		system("PAUSE");
-	}
-}
-
-SoundfontTester::SoundfontTester(const string& referenceSoundfontPath, const string& testedSoundfontPath)
-{
-	reference = BASS_MIDI_FontInit(referenceSoundfontPath.c_str(), NULL);
-	BassAssert();
-	BASS_MIDI_FontSetVolume(reference, 0.1F);
-	BassAssert();
-	tested = BASS_MIDI_FontInit(testedSoundfontPath.c_str(), NULL);
-	BassAssert();
-	BASS_MIDI_FontSetVolume(tested, 0.1F);
-	BassAssert();
-}
-
-SoundfontTester::~SoundfontTester()
-{
-	BASS_MIDI_FontFree(reference);
-	BassAssert();
-	BASS_MIDI_FontFree(tested);
-	BassAssert();
-}
-
-float SoundfontTester::GetAttenuation(int bank, int program, int key, int velocity)
-{
-	return 15.0F * log2f(GetVolume(tested, bank, program, key, velocity)
-		/ GetVolume(reference, bank, program, key, velocity));
 }
