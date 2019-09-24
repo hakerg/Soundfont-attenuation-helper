@@ -8,7 +8,25 @@ using namespace std;
 
 SoundfontTester * tester;
 
-void check(int bank, int program, int key)
+void check(int bank, int program)
+{
+	const char* name = BASS_MIDI_FontGetPreset(tester->tested, program, bank);
+	if (name)
+	{
+		float attenuation = tester->GetAttenuation(bank, program, 127);
+		if (isnormal(attenuation))
+		{
+			int rounded = roundf(attenuation);
+			if (rounded != 0)
+			{
+				cout << "Attenuation to apply to " << bank << ":" << program << ": "
+					<< rounded << " dB - " << name << endl;
+			}
+		}
+	}
+}
+
+void checkDrum(int bank, int program, int key)
 {
 	const char* name = BASS_MIDI_FontGetPreset(tester->tested, program, bank);
 	if (name)
@@ -19,7 +37,7 @@ void check(int bank, int program, int key)
 			int rounded = roundf(attenuation);
 			if (rounded != 0)
 			{
-				cout << "Attenuation to apply to " << bank << ":" << program <<
+				cout << "Attenuation to apply to drum " << bank << ":" << program <<
 					" key " << key << ": " << rounded << " dB - " << name << endl;
 			}
 		}
@@ -36,20 +54,24 @@ int main(int argc, char** argv)
 		filename = argv[1];
 	}
 	tester = new SoundfontTesterReference(filename, reference, 0.6F);
-	for (int b = 0; b < 128; b++)
+	for (int b = 0; b < 127; b++)
 	{
 		for (int p = 0; p < 128; p++)
 		{
-			check(b, p, 60);
+			check(b, p);
 		}
 	}
 	cout << endl;
-	for (int p = 0; p < 128; p++)
+	for (int b = 127; b <= 128; b++)
 	{
-		for (int k = 0; k < 128; k++)
+		for (int p = 0; p < 128; p++)
 		{
-			check(128, p, k);
+			for (int k = 0; k < 128; k++)
+			{
+				checkDrum(b, p, k);
+			}
 		}
+		cout << endl;
 	}
 	cout << endl;
 	delete tester;

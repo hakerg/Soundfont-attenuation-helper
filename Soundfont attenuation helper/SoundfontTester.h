@@ -28,5 +28,7 @@ public:
 	float GetVolume(HSOUNDFONT soundfont, int bank, int program, int key, int velocity);
 
 	virtual float GetAttenuation(int bank, int program, int key, int velocity) = 0;
+
+	float GetAttenuation(int bank, int program, int velocity);
 };
 

@@ -85,3 +85,19 @@ float SoundfontTester::GetVolume(HSOUNDFONT soundfont, int bank, int program, in
 	BassAssert();
 	return maxSum;
 }
+
+float SoundfontTester::GetAttenuation(int bank, int program, int velocity)
+{
+	float sum = 0.0F;
+	int count = 0;
+	for (int k = 36; k <= 84; k++)
+	{
+		float attenuation = GetAttenuation(bank, program, k, velocity);
+		if (isfinite(attenuation))
+		{
+			sum += attenuation;
+			count++;
+		}
+	}
+	return sum / count;
+}
